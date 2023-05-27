@@ -8,28 +8,6 @@ require '/xampp/htdocs/registration/PHPMailer-master/src/Exception.php';
 require '/xampp/htdocs/registration/PHPMailer-master/src/PHPMailer.php';
 require '/xampp/htdocs/registration/PHPMailer-master/src/SMTP.php';
 $mail = new PHPMailer(true);
-    
-try {
-    $mail->SMTPDebug = SMTP::DEBUG_OFF;
-    $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
-    $mail->SMTPAuth = true;
-    $mail->Username = 'wastemgmtnpl@gmail.com    ';
-    $mail->Password = 'nplwastemgmt'; 
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = 587;
-
-    $mail->setFrom('wastemgmtnpl@gmail.com ', 'waste mgmt');
-    $mail->addAddress('suminakdk057@gmail.com', 'Sumina Khadka'); 
-
-    $mail->isHTML(true);
-    $mail->Subject = 'Activation Email';
-    $mail->Body = 'Hi $name! Account created here is the activation link "http://localhost/registration/activate.php?token=$token";';
-    $mail->send();
-    echo 'Message sent!';
-} catch (Exception $e) {
-    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-}
 ?>
 
 <?php
@@ -86,11 +64,34 @@ if(isset($_POST['register'])){
         $email = mysqli_real_escape_string($db , $_POST['email']);
         $password = mysqli_real_escape_string($db , $_POST['password']);
         $token = bin2hex(openssl_random_pseudo_bytes(32));
-        
+
+        //Mail sender
+        try {
+          $mail->SMTPDebug = SMTP::DEBUG_OFF;
+          $mail->isSMTP();
+          $mail->Host = 'smtp.gmail.com';
+          $mail->SMTPAuth = true;
+          $mail->Username = 'wastemgmtnpl@gmail.com';
+          $mail->Password = 'vqsgnvezckqihmmd    '; //gmail app token
+          $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+          $mail->Port = 587;
+      
+          $mail->setFrom('wastemgmtnpl@gmail.com ', 'waste mgmt');
+          $mail->addAddress($email, $name); 
+      
+          $mail->isHTML(true);
+          $mail->Subject = 'Activation Email';
+          $mail->Body = "Hi $name! Account created here is the activation link http://localhost/registration/activate.php?token=$token";
+          $mail->send();
+          echo 'Message sent!';
+      } catch (Exception $e) {
+          echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+      }
+        //Mail sender
         $query = "insert into users (name,email,password,token) values('$name','$email','$password','$token')";
         
         $db->query($query);
-        $message = "Hi $name! Account created here is the activation link http://localhost/registration/activate.php?token=$token";
+        // $message = "Hi $name! Account created here is the activation link http://localhost/registration/activate.php?token=$token";
         
         mail($email , 'Activate Account' , $message , 'From: suminakdk057@gmail.com');
         header("Location:index.php?success=" . urlencode("Activation Email Sent!"));
@@ -129,30 +130,45 @@ if(isset($_POST['register'])){
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 <!-- navbar started -->
+<style>
+      .navbar {
+        background-color:  #1acc8d;
+      }
+    </style>
 </head>
+<style>
+  body {
+    background-color: #179a43;
+
+  }
+  </style>
 <body class="login-page">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+    
     <a class="navbar-brand" href="index.php">
-                    <img src="vendors/images/deskapp-logo.png" alt="">
-                    Waste Mangement Nepal
+                    <img src="vendors/images/favicon-32x32.png" alt="">
+                    <b>Waste Mangement Nepal</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 </a>
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-      
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/fe-garbaze/home.html">Home</a>
-        </li>
-</ul>
 &nbsp;
       <form class="d-flex">
-    <button class="btn btn-outline-primary" type="submit"><a href="index.php">Login</a></button>&nbsp;
+    <button class="btn btn-outline-primary" type="submit"><a href="index.php">Login</a></button>&nbsp; &nbsp; &nbsp;  
         <button class="btn btn-outline-primary" type="submit"><a href="register.php">Register</a></button>
       </form>
     </div>
+    <style>
+    .navbar-right {
+			float: right;
+      color: aqua;
+    }
+    </style>
+<div class="navbar navbar-right">
+<a href="../fe-garbaze/home.php" class="btn">About Us</a>
+  </div>
   </div>
 </nav> 
 <!-- navbar complete -->
@@ -160,7 +176,7 @@ if(isset($_POST['register'])){
     <div class="container">
         
      <form  action="register.php" method="post" style="margin-top:35px;">
-         <h2>Register Here</h2>
+         <h2 style="text-align: center;"> Register Here</h2>
          
          <?php if(isset($_GET['err'])) { ?>
          
@@ -168,8 +184,15 @@ if(isset($_POST['register'])){
          
          <?php } ?>
          <hr>
+         <style>
+         hr {
+    
+    background-color: green;
+    
+  } 
+  </style>
          <div class="form-group">
-    <label>Name</label>
+    <label>Name:</label>
     <input type="text" name="name" class="form-control" placeholder="Name" value="<?php echo @$_SESSION['name']; ?>" required>
   </div>
    <div class="form-group">
@@ -188,6 +211,7 @@ if(isset($_POST['register'])){
   <button type="submit" name="register" class="btn btn-primary">Register</button>
 </form>
    </div>
+   <br>
    <!-- /.container -->
 
 
@@ -196,7 +220,32 @@ if(isset($_POST['register'])){
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/bootstrap.js"></script>
-    
+    <!--footer -->
+    <style>
+  footer .copyright {
+  border-top: 1px solid #197901;
+  text-align: center;
+  padding-top: 30px;
+}
+  footer .credits {
+  padding-top: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: #fff;
+}
+</style>
+         <footer>
+        
+    <div class="container">
+      <div class="copyright">
+        <b> &copy; Copyright <strong><span></span></strong>. All Rights Reserved </b>
+      </div>
+      <div class="credits">
+        Designed by Waste-mgmt-group</a>
+      </div>
+    </div>
+  </footer>
+  <!-- End Footer --> 
   </body>
 </html>
 

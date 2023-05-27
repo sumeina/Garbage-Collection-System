@@ -9,8 +9,6 @@ if(loggedIn()){
     header("Location:myaccount.php");
     exit();
 }
-
-
 if(isset($_POST['login'])){
     $email = mysqli_real_escape_string($db , $_POST['email']);
     $password = mysqli_real_escape_string($db , $_POST['password']);
@@ -67,41 +65,66 @@ if(isset($_POST['login'])){
     <link rel="stylesheet" type="text/css" href="vendors/styles/icon-font.min.css">
     <link rel="stylesheet" type="text/css" href="vendors/styles/style.css">
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-
+    <style>
+      .navbar {
+        background-color:  #1acc8d;
+      }
+    </style>
 </head>
+<style>
+  body {
+    background-color: #02a117;
+  }
+  </style>
+
+  <!-- /* hr {
+    
+    background-color: green;
+    
+  } */ -->
+
+
 <body class="login-page">
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <a class="navbar-brand" href="index.php">
-                    <img src="vendors/images/deskapp-logo.png" alt="">
-                    Waste Mangement Nepal
+                    <img src="vendors/images/favicon-32x32.png" alt="">
+                   <b> Waste Mangement Nepal</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </a>
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-      
+    <style>
+  .navbar-nav .nav-link {
+    color: red;
+  }
+</style>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/fe-garbaze/home.html">Home</a>
+          <b><a class="nav-link active" aria-current="page" href="../fe-garbaze/home.php" style="color: green;" >
+            <u>About Waste Management Nepal</u></a></b>
         </li>
-</ul>
-&nbsp;
+</ul>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <form class="d-flex">
-     
-      
         <button class="btn btn-outline-primary" type="submit"><a href="index.php">Login</a></button>
-       
-        &nbsp;
-        <button class="btn btn-outline-primary" type="submit"><a href="register.php">Register</a></button>
-        
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-outline-primary" type="submit"><a href="register.php">Register</a></button>  
       </form>
-   
-
     </div>
-  </div>
+   
+    <style>
+    .navbar-right {
+			float: right;
+      color: aqua;
+    }
+    </style>
+   <div class="navbar navbar-right">
+ <a href="admin.php" class="btn">Login as Admin</a> </div>
+  </div>  
 </nav> 
+  
 <!--navbar complete-->      
 <!--second part-->
     <div class="login-wrap d-flex align-items-center flex-wrap justify-content-center">
@@ -155,8 +178,7 @@ if(isset($_POST['login'])){
 
 
     </div><!-- /.container -->
-
-
+       
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -171,12 +193,38 @@ if(isset($_POST['login'])){
                 </div>
          </div>
          </div>
+<!--footer -->
+         <style>
+  footer .copyright {
+  border-top: 1px solid #197901;
+  text-align: center;
+  padding-top: 30px;
+}
+  footer .credits {
+  padding-top: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: #fff;
+}
+</style>
+         <footer>
         
+    <div class="container">
+      <div class="copyright">
+        <b> &copy; Copyright <strong><span></span></strong>. All Rights Reserved </b>
+      </div>
+      <div class="credits">
+        Designed by Waste-mgmt-group</a>
+      </div>
+    </div>
+  </footer>
+  <!-- End Footer -->   
           <!-- js -->
     <script src="vendors/scripts/core.js"></script>
     <script src="vendors/scripts/script.min.js"></script>
     <script src="vendors/scripts/process.js"></script>
     <script src="vendors/scripts/layout-settings.js"></script>
+    
 </body>
 </html>
   

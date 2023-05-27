@@ -47,29 +47,37 @@ $result = $db->query($query);
  
 
 </head>
-
-<body class="login-page"; style="background-color: #148c38;">
+<style>
+  body {
+    background-color: #02a117;
+  }
+  </style>
+<body class="login-page">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <a class="navbar-brand" href="index.php">
-                    <img src="vendors/images/deskapp-logo.png" alt="">
-                    Waste Mangement Nepal
-                </a>
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-      
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="home.php">Home</a>
-        </li>
-</ul>
-
+                    <img src="vendors/images/favicon-32x32.png" alt="">
+                  <b>  Waste Mangement Nepal </b></a>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03"> 
     </div>
+    <style>
+    .navbar-right {
+			float: right;
+      color: aqua;
+    }
+    .navbar {
+        background-color:  #1acc8d;
+    }
+    </style>
+<div class="navbar navbar-right">
+<a href="../fe-garbaze/home.php" class="btn">About Us</a>
   </div>
+  </div>
+  
 </nav> 
-
   <!--- sidebar-->
    
   <div id="container">
@@ -179,14 +187,33 @@ table, th, td {
                     </div>
                 </div>
           </div>
-          </div>
-    <!-- -->
-  
-<footer style="width: 100%; display: flex; justify-content: center; padding-top:15px">
-  <p style="color: black; font-size: 15px; text-align: center;">
-    All Rights Reserved. Waste-Mgmt-Group
-  </p>
-</footer>
+          </div><br><br>
+<!--footer -->
+<style>
+  footer .copyright {
+  border-top: 1px solid #197901;
+  text-align: center;
+  padding-top: 30px;
+}
+  footer .credits {
+  padding-top: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: #fff;
+}
+</style>
+         <footer>
+        
+    <div class="container">
+      <div class="copyright">
+        <b> &copy; Copyright <strong><span></span></strong>. All Rights Reserved </b>
+      </div>
+      <div class="credits">
+        Designed by Waste-mgmt-group</a>
+      </div>
+    </div>
+  </footer>
+  <!-- End Footer --> 
 </body>
 </html>
             

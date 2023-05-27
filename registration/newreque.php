@@ -30,18 +30,11 @@ if (isset($_POST['submit'])) {
   $garbage_type = mysqli_real_escape_string($db, $_POST['garbage_type']);
   $lat = mysqli_real_escape_string($db, $_POST['lat']);
   $lng = mysqli_real_escape_string($db, $_POST['lng']);
-  $location = json_encode(array($lat, $lng));
+  $location = '[' . $lat . ',' . $lng . ']';
   $address = mysqli_real_escape_string($db, $_POST['address']);
   $weight = mysqli_real_escape_string($db, $_POST['weight']);
   $contact = mysqli_real_escape_string($db, $_POST['contact']);
-?>
-<script>
-  // Add a listener to the marker popup to update the address field when the popup is opened
-  marker.on('popupopen', function() {
-    updateAddressField();
-  });
-</script>
-<?php
+
   if (empty($names) || empty($email) || empty($pay_type) || empty($client_type) || empty($garbage_type) || empty($location) || empty($contact)) {
     // Display error message
     echo "Error: All fields are required.";
@@ -57,18 +50,43 @@ if (isset($_POST['submit'])) {
       // If the emails do not match, return an error message to the user
       die("Error: Request email does not match user email");
     } else {
-        //new query
-      $query = "INSERT INTO request (address, names, email, pay_type, client_type, garbage_type, location, weight, contact,  status, date) 
-       VALUES ('$address', '$names','$email','$pay_type', '$client_type', '$garbage_type', '$location',  '$weight', '$contact', '{$_SESSION['status']}', '{$_SESSION['date']}')";
-      
-      $db->query($query);
+      // $query = "INSERT INTO request (names, email, pay_type, client_type, garbage_type, location, weight, contact, status, date) 
+      // VALUES ('$names','$email','$pay_type', '$client_type', '$garbage_type', '$location',  '$weight', '$contact', '{$_SESSION['status']}', '{$_SESSION['date']}')";
+      //new query
+      // $query = "INSERT INTO request (names, email, pay_type, client_type, garbage_type, location, weight, contact, address, status, date) 
+      //  VALUES ('$names','$email','$pay_type', '$client_type', '$garbage_type', '$location',  '$weight', '$contact', '$address', '{$_SESSION['status']}', '{$_SESSION['date']}')";
+  $query = "INSERT INTO request (names, email, pay_type, client_type, garbage_type, location, weight, contact, address, status, date) 
+ VALUES ('$names','$email','$pay_type', '$client_type', '$garbage_type', '$location',  '$weight', '$contact', '$address', '{$_SESSION['status']}', '{$_SESSION['date']}')";
+
+      // $db->query($query);
       $message = "Hi $user_email! New request has been submitted.";
       mail($user_email, 'Garbage Collection Request', $message, 'From: suminakdk057@gmail.com');
       header("Location:newrequest.php?success=" . urlencode(" Request Sent!"));
-      // Process your form data and store it in the database
+      $response = array(
+        'success' => true,
+        'message' => 'Request submitted successfully.',
+        'data' => array(
+          'names' => $names,
+          'email' => $email,
+          'pay_type' => $pay_type,
+          'client_type' => $client_type,
+          'garbage_type' => $garbage_type,
+          'location' => $location,
+          'address' => $address,
+          'weight' => $weight,
+          'contact' => $contact
+        )
+      );
+
+      // Send the response as JSON
+      header('Content-Type: application/json');
+      echo json_encode($response);
+      exit();
+    }
   }
- }
+
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -132,12 +150,11 @@ if (isset($_POST['submit'])) {
         }
       </style>
       <style>
-  .leaflet-popup-content {
-    font-size: 16px; /* Adjust the font size as desired */
-  }
-  
- 
-</style>
+        .leaflet-popup-content {
+          font-size: 16px;
+          /* Adjust the font size as desired */
+        }
+      </style>
 
       <div class="navbar navbar-right">
         <a href="../fe-garbaze/home.php" class="btn">About Us</a>
@@ -218,8 +235,8 @@ if (isset($_POST['submit'])) {
                           <div class="form-group">
                             <input type="hidden" name="date" required class="form-control"
                               value="<?php echo date('Y-m-d') ?>">
-                            <input type="text" name="names" required class="form-control"
-                              placeholder="Enter your name " value="<?php echo @$_SESSION['names']; ?>" required>
+                            <input type="text" name="names" required class="form-control" placeholder="Enter your name "
+                              value="<?php echo @$_SESSION['names']; ?>" required>
                           </div>
                         </div>
                       </div>
@@ -274,7 +291,150 @@ if (isset($_POST['submit'])) {
                           </div>
                         </div>
                       </div>
-                     
+                      <div class="row">
+                        <div class="col-md-2">
+                          <div class="form-group">
+                            <label>Address: Please mark pick-up point</label>
+                          </div>
+                        </div>
+                        <div class="col-md-10">
+                          <div class="form-group">
+                            <input type="hidden" name="location" id="location" value="" required>
+                            <input type="hidden" name="address" id="address" class="form-control">
+                            <div id="map" style="width:900px; height: 50vh"></div>
+                            <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+                            <script>
+                              var lat, lon;
+                              var isLocationSelected = false;
+                              let selectedLocation = { lat: "", long: "" };
+                              var latlng;
+                              var address;
+                              var map = L.map('map').setView([27.70514, 85.3185], 13);
+                              var marker = L.marker([0, 0]);
+                              // marker.bindPopup("<b>Hello!</b><br>This is a drop-off point.").openPopup();
+
+                              mapLink = "<a href='http://openstreetmap.org'>OpenStreetMap</a>";
+                              L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: 'Leaflet &copy; ' + mapLink + ', contribution', maxZoom: 18 }).addTo(map);
+                              latlng = map.on('click', function (e) {
+                                isLocationSelected = true;
+                                console.log(e)
+                                lat = e.latlng.lat;
+                                lon = e.latlng.lng;
+                                // added code
+                                document.getElementById('lat').value = lat;
+                                document.getElementById('lng').value = lon;
+                                console.log("Lat: " + lat + "Long: " + lon);
+                                selectedLocation.lat = lat;
+                                selectedLocation.long = lon
+                                var newLatLng = new L.LatLng(lat, lon);
+                                
+                                marker.setLatLng(newLatLng);
+                                marker.addTo(map)
+                                console.log(newLatLng)
+                                // return newLatLng;
+                                //Function to add location
+                                // saveLocation();
+                                //Function to add location
+                              });
+                              function saveLocation() {
+                                // console.log("Save Location")
+                                if (isLocationSelected) {
+                                  var xhr = new XMLHttpRequest();
+                                  xhr.onreadystatechange = function () {
+                                    if (this.readyState == 4 && this.status == 200) {
+                                      console.log(this.responseText);
+                                      //Address GETTER
+                                      const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${selectedLocation.lat}&lon=${selectedLocation.long}`;
+
+                                      return fetch(apiUrl)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                          // const address = data.display_name;
+                                          const address = data["address"].suburb;
+
+                                          // Assign address value to the hidden input field
+                                          document.getElementById("address").value = address;
+                                          // Submit the form
+                                          document.getElementById("form").submit();
+                                          // address = data;
+                                          console.log(address);
+                                          // return address;
+                                        
+                                          fetch('final/registration/newrequest.php', {
+                                            method: 'POST',
+                                            body: formData
+                                          })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                              // Check if the request was successful
+                                              if (data.success) {
+                                                // Retrieve the values from the response data
+                                                const names = data.data.names;
+                                                const email = data.data.email;
+                                                const payType = data.data.pay_type;
+                                                const clientType = data.data.client_type;
+                                                const garbageType = data.data.garbage_type;
+                                                const location = data.data.location;
+                                                const address = data.data.address;
+                                                const weight = data.data.weight;
+                                                const contact = data.data.contact;
+
+                                                // Do something with the retrieved values
+                                                console.log(names, email, payType, clientType, garbageType, location, address, weight, contact);
+                                              } else {
+                                                // Display an error message
+                                                console.log('Request failed:', data.message);
+                                              }
+                                            })
+                                            .catch(error => {
+                                              // Handle any errors
+                                              console.error('Error:', error);
+                                            });
+
+                                        })
+                                        .catch(error => {
+                                          console.log('Error:', error);
+                                          return null;
+                                        });
+                                     
+
+                                      //Address GETTER
+                                      alert("Location saved successfully!");
+                                    }
+                                  };
+                                  xhr.open("POST", "newrequest.php", true);
+                                  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                                  xhr.send("lat=" + selectedLocation.lat + "&long=" + selectedLocation.long + "&address=" + address);
+                                  // xhr.send("address=" address);
+
+
+                                } else {
+                                  alert("Please select a location on the map first!");
+                                }
+                              }
+
+                            
+                              // assume that `newLatLng` is a Leaflet LatLng object
+                              document.getElementById('location').value = newLatLng.lat + ',' + newLatLng.lng;
+                              document.getElementById('address').value = address;
+                            </script>
+                            <script>
+                              var newLatLng = null;
+                              function onMapClick(e) {
+                                newLatLng = e.latlng;
+                                document.getElementById('lat').value = newLatLng.lat;
+                                document.getElementById('lng').value = newLatLng.lng;
+                              }
+                              map.on('click', onMapClick);
+                            </script>
+
+                            <input type="hidden" name="lat" id="lat">
+                            <input type="hidden" name="lng" id="lng">
+                            <!-- <input type="hiden" name="address" id="address">  -->
+
+                          </div>
+                        </div>
+                      </div><br>
                       <div class="row">
                         <div class="col-md-2">
                           <div class="form-group">
@@ -325,99 +485,6 @@ if (isset($_POST['submit'])) {
                           </div>
                         </div>
                       </div>
-                      <div class="row">
-                        <div class="col-md-2">
-                          <div class="form-group">
-                            <label>Address: Please mark pick-up point</label>
-                          </div>
-                        </div>
-                        <div class="col-md-10">
-                          <div class="form-group overflow-hidden">
-                            <input type="hidden" name="location" id="location" value="" required>
-                            <input type="hidden" name="address" id="address" class="form-control">
-    
-                            <div id="map" style="width:900px; height: 50vh;"></div>
-                            <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
-                            <script>
-                              var lat, lon;
-                              var isLocationSelected = false;
-                              let selectedLocation = { lat: "", long: "" };
-                              var latlng;
-                              var address;
-                              var map = L.map('map').setView([27.70514, 85.3185], 13);
-                               var marker = L.marker([0,0]);
-                               map.on('click', function(e) {
-                                  });  
-                              mapLink = "<a href='http://openstreetmap.org'>OpenStreetMap</a>";
-                              L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: 'Leaflet &copy; ' + mapLink + ', contribution', maxZoom: 18 }).addTo(map);
-                              latlng = map.on('click', function (e) {
-                                isLocationSelected = true;
-                                console.log(e)
-                                lat = e.latlng.lat;
-                                lon = e.latlng.lng;
-                                console.log("Lat: " + lat + "Long: " + lon);
-                                selectedLocation.lat = lat;
-                                selectedLocation.long = lon
-                                var newLatLng = new L.LatLng(lat, lon);
-                                marker.setLatLng(newLatLng);
-                                marker.addTo(map)
-                                console.log(newLatLng)
-                              });
-                              function saveLocation() {
-                                // console.log("Save Location")
-                                if (isLocationSelected) {
-                                  var xhr = new XMLHttpRequest();
-                                  xhr.onreadystatechange = function () {
-                                    if (this.readyState == 4 && this.status == 200) {
-                                      console.log(this.responseText);
-                                      //Address GETTER
-                                      const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${selectedLocation.lat}&lon=${selectedLocation.long}`;
-
-                                      return fetch(apiUrl)
-                                        .then(response => response.json())
-                                        .then(data => {
-                                          // const address = data.display_name;
-                                           address = data["address"].suburb;        
-                                          document.getElementById('address').value = address;
-                                          console.log("address", address);
-                                          // return address;
-                                        })
-                                        .catch(error => {
-                                          console.log('Error:', error);
-                                          return null;
-                                        });
-                                      //Address GETTER
-                                      alert("Location saved successfully!");
-                                    }
-                                  };
-                                  xhr.open("POST", "newrequest.php", true);
-                                  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                                  xhr.send("lat=" + selectedLocation.lat + "&long=" + selectedLocation.long + "&address=" + address);
-                                  // xhr.send("address=" address);
-                                } else {
-                                  alert("Please select a location on the map first!");
-                                }
-                              }
-                              // assume that `newLatLng` is a Leaflet LatLng object
-                              document.getElementById('location').value = newLatLng.lat + ',' + newLatLng.lng;
-                              </script>
-                            <script>
-                              var newLatLng = null;
-                              function onMapClick(e) {
-                                newLatLng = e.latlng;
-                                document.getElementById('lat').value = newLatLng.lat;
-                                document.getElementById('lng').value = newLatLng.lng;
-                                saveLocation();
-                              }
-                              map.on('click', onMapClick);
-                            </script>
-
-                            <input type="hidden" name="lat" id="lat">
-                            <input type="hidden" name="lng" id="lng">
-
-                          </div>
-                        </div>
-                      </div>
                       <input type="hidden" name="status" required class="form-control" value="pending">
                       <div class="form-actions">
                         <script>
@@ -427,7 +494,7 @@ if (isset($_POST['submit'])) {
                           }
                         </script>
                         <div class="text-right">
-                          <button type="submit" name="submit" class="btn btn-info" id="addAddress"
+                          <button type="submit" name="submit" class="btn btn-info"
                             onclick="saveLocation()">Request</button>
                           <button type="reset" class="btn btn-dark">Reset</button>
 
@@ -438,13 +505,17 @@ if (isset($_POST['submit'])) {
                           if (isset($_GET['success'])) {
                             echo '<script>showSuccessMessage();</script>';
                           }
+
                           ?>
+
                         </div>
                       </div>
                     </div>
                   </form>
+
                 </div>
-              </div><br>
+              </div>
+              <br>
               <!-- end of request form-->
               <!--footer -->
               <style>
@@ -481,7 +552,45 @@ if (isset($_POST['submit'])) {
             <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
+
+
 </body>
 
 </html>
+ <?php
+// Process your form data and store it in the database
 
+// After processing the form data and storing it in the database
+
+// Create an associative array with the desired values
+$names = isset($_POST['names']) ? $_POST['names'] : null;
+$email = isset($_POST['email']) ? $_POST['email'] : null;
+$pay_type = isset($_POST['pay_type']) ? $_POST['pay_type'] : null;
+$client_type = isset($_POST['client_type']) ? $_POST['client_type'] : null;
+$garbage_type = isset($_POST['garbage_type']) ? $_POST['garbage_type'] : null;
+$location = isset($_POST['location']) ? $_POST['location'] : null;
+$address = isset($_POST['address']) ? $_POST['address'] : null;
+$weight = isset($_POST['weight']) ? $_POST['weight'] : null;
+$contact = isset($_POST['contact']) ? $_POST['contact'] : null;
+
+$response = array(
+  'success' => true,
+  'message' => 'Request submitted successfully.',
+  'data' => array(
+    'names' => $names,
+    'email' => $email,
+    'pay_type' => $pay_type,
+    'client_type' => $client_type,
+    'garbage_type' => $garbage_type,
+    'location' => $location,
+    'address' => $address,
+    'weight' => $weight,
+    'contact' => $contact
+  )
+);
+
+// Send the response as JSON
+header('Content-Type: application/json');
+echo json_encode($response);
+exit();
+?> 

@@ -34,7 +34,7 @@
     <div class="container d-flex align-items-center justify-content-between">
 
       <div class="logo">
-        <a href="home.html"><img src="/fe-garbaze/assets/img/apple-touch-iconl.png" alt="" class="img-fluid">
+        <a href="home.php"><img src="/fe-garbaze/assets/img/apple-touch-iconl.png" alt="" class="img-fluid">
         <span> Waste Management Nepal</span></a>
       </div>
       <nav id="navbar" class="navbar">
@@ -45,7 +45,7 @@
           <li><a class="nav-link scrollto" href="#gallery">Gallery</a></li>
           <li><a class="nav-link scrollto" href="#pricing">Pricing</a></li>
           <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-          <li><a class="nav-link scrollto" href="#contact">Login as Admin</a></li>
+          <li><a class="nav-link scrollto" href="../registration/admin.php">Login as Admin</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -63,18 +63,20 @@
             <h2>Welcome to Waste Management<span> Nepal!!</span></h2>
             <h6>An automatic waste management system,a step towards a cleaner and more sustainable world.</h6>
             <div class="text-center text-lg-start"><br>
-              <a href="/registration/index.php" class="btn-get-started scrollto">Login as User</a>
-               <a href="../registration/register.php" class="btn-get-started scrollto">Register</a>
+             
+              <a href="../registration/index.php" class="btn-get-started scrollto">Login as User</a>
+               <a href="../registration/register.php" class="btn-get-started scrollto">Register as User</a> 
+               
             </div>
           </div>
         </div>
         <div class="col-lg-4 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
-          <img src="assets/img/hero-img.png" class="img-fluid animated" alt="">
+          <img src="assets/img/hero-img.jpg" class="img-fluid animated" alt="">
         </div>
       </div>
     </div>
 
-    <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+    <svg class="hero-waves"  viewBox="0 24 150 28 " preserveAspectRatio="none">
       <defs>
         <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
       </defs>
@@ -606,7 +608,6 @@
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>

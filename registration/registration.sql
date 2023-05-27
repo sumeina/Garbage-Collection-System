@@ -86,7 +86,26 @@ INSERT INTO `garbage_type` (`id`, `name`, `chargespm`, `chargespd`) VALUES
 (9, 'Bio-Waste', '6000', '200');
 
 -- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `location` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `chargespm` text NOT NULL, --charge-per-month--
+  `chargespd` varchar(500) NOT NULL, --charge-per-day--
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
+--
+-- Dumping data for table `gabbage_type`
+--
+
+INSERT INTO `garbage_type` (`id`, `name`, `chargespm`, `chargespd`) VALUES
+(1, 'Non-Hazardous', '3000', '100'),
+(8, 'Hazardous', '9000', '300'),
+(9, 'Bio-Waste', '6000', '200');
+
+-- --------------------------------------------------------
+
+--
 --
 CREATE TABLE IF NOT EXISTS `request` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
